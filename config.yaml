@@ -53,8 +53,8 @@ sampling:
     mmlu: 1816  # all of MMLU validation + dev
   val_fraction: 0.15
   test:
-    gsm8k: 150
-    mmlu: 150
+    gsm8k: 1000
+    mmlu: 1500
 
 embeddings:
   model: BAAI/bge-small-en-v1.5
