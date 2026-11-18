@@ -1,0 +1,44 @@
+{
+  "device": "mps",
+  "best_epoch": 3,
+  "history": [
+    {
+      "epoch": 1,
+      "train_weighted_loss": 0.6251614564515954,
+      "train_auroc": 0.7587124944193852,
+      "val_auroc": 0.6915419690450196,
+      "train_logloss": 0.43125250935554504,
+      "val_logloss": 0.44394946098327637
+    },
+    {
+      "epoch": 2,
+      "train_weighted_loss": 0.5798601066967167,
+      "train_auroc": 0.8339194582570006,
+      "val_auroc": 0.6899043092929164,
+      "train_logloss": 0.3309509754180908,
+      "val_logloss": 0.3594406843185425
+    },
+    {
+      "epoch": 3,
+      "train_weighted_loss": 0.5100385612288694,
+      "train_auroc": 0.9128625475314438,
+      "val_auroc": 0.6937897373322202,
+      "train_logloss": 0.34066250920295715,
+      "val_logloss": 0.40079355239868164
+    },
+    {
+      "epoch": 4,
+      "train_weighted_loss": 0.39768308524525664,
+      "train_auroc": 0.9535962251951291,
+      "val_auroc": 0.6876244300301844,
+      "train_logloss": 0.25719308853149414,
+      "val_logloss": 0.3421793580055237
+    }
+  ],
+  "max_len": 256,
+  "batch_size": 16,
+  "lr": 2e-05,
+  "epochs": 4,
+  "truncation_side": "left",
+  "loss": "class-weighted cross-entropy"
+}

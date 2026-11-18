@@ -1,0 +1,20 @@
+{
+  "C": 3.0,
+  "class_weight": null,
+  "val_auroc_grid": {
+    "C=0.01,class_weight=None": 0.6693,
+    "C=0.03,class_weight=None": 0.6722,
+    "C=0.1,class_weight=None": 0.679,
+    "C=0.3,class_weight=None": 0.6911,
+    "C=1.0,class_weight=None": 0.7104,
+    "C=3.0,class_weight=None": 0.7304,
+    "C=10.0,class_weight=None": 0.729,
+    "C=0.01,class_weight=balanced": 0.6746,
+    "C=0.03,class_weight=balanced": 0.6837,
+    "C=0.1,class_weight=balanced": 0.6982,
+    "C=0.3,class_weight=balanced": 0.7156,
+    "C=1.0,class_weight=balanced": 0.7261,
+    "C=3.0,class_weight=balanced": 0.7173,
+    "C=10.0,class_weight=balanced": 0.6929
+  }
+}

@@ -1,0 +1,7 @@
+set,random_apgr_expected,random_apgr_measured_mean_200,any_router_beats_oracle
+public,0.5,0.4954626666666681,False
+gsm8k,0.5,0.50719875,False
+mmlu,0.5,0.499524516129031,False
+backend,0.5000000000000001,0.5135722728807833,False
+backend_stress,0.5,0.4990811403508772,False
+combined,0.5,0.4978451602450818,False

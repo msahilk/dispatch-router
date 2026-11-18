@@ -1,0 +1,9 @@
+category,tier,n,acc_haiku,acc_sonnet,n_only_sonnet_right,sonnet_share_at_30,caught
+finance,standard,42,0.9047619047619048,0.9523809523809523,2,0.30952380952380953,0
+finance,stress,40,0.625,0.875,11,0.475,6
+infra,standard,46,1.0,1.0,0,0.43478260869565216,0
+infra,stress,40,0.925,0.95,3,0.625,2
+python,standard,52,1.0,1.0,0,0.0,0
+python,stress,47,0.8936170212765957,0.9361702127659575,4,0.0,0
+sql,standard,37,0.972972972972973,1.0,1,0.5945945945945946,0
+sql,stress,25,0.92,1.0,2,0.0,0
