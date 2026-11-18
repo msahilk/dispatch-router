@@ -1,0 +1,121 @@
+{
+  "models": {
+    "haiku": "claude-haiku-5-5",
+    "sonnet": "claude-sonnet-5-5"
+  },
+  "price_ratio_sonnet_over_haiku_output": 20.0,
+  "n_train_pool": 4816,
+  "n_test": {
+    "public": 2500,
+    "gsm8k": 1000,
+    "mmlu": 1500,
+    "backend": 329,
+    "backend_stress": 152
+  },
+  "main_router": "logreg",
+  "public_test": {
+    "acc_haiku": 0.9208,
+    "acc_sonnet": 0.952,
+    "haiku_cost_pct_of_sonnet": 5.611057130707375,
+    "apgr": [
+      0.692076923076924,
+      0.6145503893575607,
+      0.7560868373493977
+    ],
+    "cpt50": [
+      0.2096,
+      0.15836000000000003,
+      0.27729999999999994
+    ],
+    "cpt80": [
+      0.5432,
+      0.39638999999999996,
+      0.6744399999999999
+    ],
+    "cost_pct_at_99pct_of_sonnet_acc": [
+      54.321547412597404,
+      33.341133386350116,
+      66.30088018275701
+    ],
+    "random_cost_pct_at_99pct_of_sonnet_acc": 71.2302502134396,
+    "cost_pct_at_95pct_of_sonnet_acc": [
+      5.611057130707375,
+      5.541337546680487,
+      5.685114959176365
+    ],
+    "acc_at_30pct_sonnet": [
+      0.94,
+      0.9311900000000001,
+      0.9492
+    ],
+    "acc_kept_vs_sonnet_at_30pct": 0.9873949579831932,
+    "cost_pct_at_30pct_sonnet": [
+      43.15766415435579,
+      42.272217395806386,
+      44.13039288304254
+    ],
+    "auroc": [
+      0.6959473097613846,
+      0.6585262981179861,
+      0.7326055271291521
+    ],
+    "random_apgr": 0.5,
+    "oracle_apgr": 1.2917076923076927
+  },
+  "backend_set": {
+    "acc_haiku": 0.9088145896656535,
+    "acc_sonnet": 0.9635258358662614,
+    "apgr": [
+      0.6335697399527186,
+      0.46587817103109697,
+      0.8987218455303546
+    ],
+    "auroc": [
+      0.6413600891861762,
+      0.5260635038913727,
+      0.7397473275024296
+    ],
+    "cost_pct_at_99pct_of_sonnet_acc": 55.199248830183116,
+    "random_cost_pct_at_99pct_of_sonnet_acc": 83.62298053091875
+  },
+  "distilbert_minus_logreg": {
+    "public_apgr": [
+      -0.0030923076923071724,
+      -0.040283373679577295,
+      0.035289678697182705
+    ],
+    "backend_apgr": [
+      -0.27304964539007137,
+      -0.6183798471032522,
+      -0.01256217187068269
+    ]
+  },
+  "overfitting_auroc": {
+    "prior": {
+      "auroc_train": 0.7384524570100219,
+      "auroc_val": 0.6788741891978678,
+      "auroc_test_public": 0.6721844860420012,
+      "auroc_backend": 0.5
+    },
+    "knn": {
+      "auroc_train": 0.6967147497575319,
+      "auroc_val": 0.716716973861666,
+      "auroc_test_public": 0.6659777619812371,
+      "auroc_backend": 0.26153846153846155
+    },
+    "logreg": {
+      "auroc_train": 0.8046832904844743,
+      "auroc_val": 0.7303962494380579,
+      "auroc_test_public": 0.6959473097613845,
+      "auroc_backend": 0.6414715719063545
+    },
+    "distilbert": {
+      "auroc_train": 0.9128625475314438,
+      "auroc_val": 0.6937897373322202,
+      "auroc_test_public": 0.692899893812144,
+      "auroc_backend": 0.3069119286510591
+    }
+  },
+  "total_api_spend_usd": 3.051425,
+  "bootstrap_resamples": 1000
+}
