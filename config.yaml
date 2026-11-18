@@ -1,0 +1,72 @@
+# dispatch-router configuration. Every tunable lives here.
+# Model IDs and prices verified against Anthropic's docs on 2026-11-18:
+#   https://platform.claude.com/docs/en/about-claude/models/overview
+#   https://platform.claude.com/docs/en/about-claude/pricing
+
+models:
+  haiku:
+    id: claude-haiku-5-5
+    # USD per million tokens, standard (non-batch). Haiku 5.5 has a second, higher
+    # rate card for prompts over 100K tokens; our prompts are < 2K tokens, so the
+    # lower card always applies.
+    price_input_per_mtok: 0.10
+    price_output_per_mtok: 0.50
+    # Thinking off. Haiku 5.5 accepts {"type": "disabled"} at effort low/medium/high.
+    thinking: {type: disabled}
+    effort: medium
+  sonnet:
+    id: claude-sonnet-5-5
+    price_input_per_mtok: 2.00
+    price_output_per_mtok: 10.00
+    # Sonnet 5.5 rejects {"type": "disabled"}; "between_tools" is its thinking-off
+    # setting (no up-front extended thinking). Allowed at effort high or below.
+    thinking: {type: between_tools}
+    effort: medium
+
+# Message Batches API is 50% off both input and output tokens.
+batch_discount: 0.5
+
+budget:
+  cap_usd: 5.00
+  ledger_path: results/spend_ledger.csv
+
+# max_tokens per dataset (identical for both models). Thinking is off, so this
+# only has to cover the visible brief reasoning + the ANSWER line.
+max_tokens:
+  gsm8k: 1024
+  mmlu: 768
+  backend: 768
+
+# Rough output-token expectations, used only for pre-flight cost estimates.
+expected_output_tokens:
+  gsm8k: 220
+  mmlu: 160
+  backend: 160
+
+# Safety margin applied to every pre-flight estimate.
+estimate_margin: 1.3
+
+sampling:
+  seed: 42
+  train:
+    gsm8k: 1000
+    mmlu: 1500
+  val_fraction: 0.15
+  test:
+    gsm8k: 150
+    mmlu: 150
+
+embeddings:
+  model: BAAI/bge-small-en-v1.5
+
+paths:
+  cache_dir: data/cache
+  batches_dir: data/batches
+  prompts_dir: data/prompts
+  responses_dir: data/responses
+  embeddings_dir: data/embeddings
+  results_dir: results
+
+api:
+  max_retries: 6
+  batch_poll_seconds: 30

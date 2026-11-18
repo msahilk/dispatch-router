@@ -1,0 +1,33 @@
+[project]
+name = "dispatch-router"
+version = "0.1.0"
+description = "Calibrated predictive router between Claude Haiku and Claude Sonnet, evaluated on cost-quality curves."
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "anthropic>=2.0",
+    "datasets>=3.0",
+    "sentence-transformers>=3.0",
+    "scikit-learn>=1.5",
+    "torch>=2.5",
+    "transformers>=4.45",
+    "numpy>=1.26",
+    "pandas>=2.2",
+    "matplotlib>=3.9",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dispatch_router"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
