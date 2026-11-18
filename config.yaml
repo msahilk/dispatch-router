@@ -27,7 +27,7 @@ models:
 batch_discount: 0.5
 
 budget:
-  cap_usd: 5.00
+  cap_usd: 10.00  # raised from the PRD's $5 with Sahil's approval (2026-11-18)
   ledger_path: results/spend_ledger.csv
 
 # max_tokens per dataset (identical for both models). Thinking is off, so this
@@ -49,8 +49,8 @@ estimate_margin: 1.3
 sampling:
   seed: 42
   train:
-    gsm8k: 1000
-    mmlu: 1500
+    gsm8k: 3000
+    mmlu: 1816  # all of MMLU validation + dev
   val_fraction: 0.15
   test:
     gsm8k: 150
