@@ -1,7 +1,8 @@
-"""Phase 0 smoke test: one tiny Haiku call (~$0.0001) to prove the API key works.
+"""Smoke test: one tiny call (well under $0.001) to prove the API key works.
 
     uv run python scripts/phase0_smoke.py            # prints the estimate only
     uv run python scripts/phase0_smoke.py --run      # makes the call
+    uv run python scripts/phase0_smoke.py --run --model sonnet
 """
 
 import argparse
@@ -14,9 +15,10 @@ PROMPT = "What is 17 * 3? Reply with one short line ending in `ANSWER: <number>`
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", action="store_true", help="actually call the API")
+    ap.add_argument("--model", choices=["haiku", "sonnet"], default="haiku")
     args = ap.parse_args()
 
-    spec = CallSpec("haiku", PROMPT, max_tokens=64, dataset="smoke")
+    spec = CallSpec(args.model, PROMPT, max_tokens=64, dataset="smoke")
     cache = ResponseCache()
     pending = cache.missing([spec])
     print(format_estimate(estimate(pending, batch=False)))
