@@ -112,3 +112,28 @@ def write_jsonl(df: pd.DataFrame | list[dict[str, Any]], file: Path) -> None:
 def read_jsonl(file: Path) -> pd.DataFrame:
     with open(file) as f:
         return pd.DataFrame([json.loads(l) for l in f if l.strip()])
+
+
+def build_public_test(train_pool: pd.DataFrame, n_gsm8k: int, n_mmlu: int, seed: int) -> pd.DataFrame:
+    """Sample GSM8K test + MMLU test (stratified by subject), excluding anything whose
+    normalized text appears in the training pool."""
+    seen = set(train_pool["question"].map(normalize_text))
+    g = gsm8k_items("test")
+    m = mmlu_items(["test"])
+    g = g[~g["question"].map(normalize_text).isin(seen)]
+    m = m[~m["question"].map(normalize_text).isin(seen)]
+    # MMLU test has exact-duplicate questions across subjects; keep one of each
+    m = m.drop_duplicates(subset="question")
+    test = pd.concat(
+        [g.sample(n_gsm8k, random_state=seed), stratified_sample(m, n_mmlu, by="category", seed=seed)]
+    ).reset_index(drop=True)
+    test["split"] = "test"
+    return test
+
+
+def assert_no_overlap(train: pd.DataFrame, test: pd.DataFrame) -> None:
+    ids = set(train["id"]) & set(test["id"])
+    assert not ids, f"{len(ids)} IDs overlap between train and test"
+    a = set(train["question"].map(normalize_text))
+    texts = [q for q in test["question"].map(normalize_text) if q in a]
+    assert not texts, f"{len(texts)} questions overlap by normalized text"
