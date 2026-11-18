@@ -4,3 +4,5 @@ timestamp,phase,model,mode,calls,input_tokens,output_tokens,usd
 2026-11-18T09:16:08+00:00,train_haiku,claude-haiku-5-5,batch,4814,922845,644415,0.207246
 2026-11-18T09:28:30+00:00,test_both_models,claude-haiku-5-5,batch,2677,558920,391909,0.125923
 2026-11-18T09:28:30+00:00,test_both_models,claude-sonnet-5-5,batch,2677,558920,340205,2.259945
+2026-11-18T09:37:21+00:00,test_both_models,claude-haiku-5-5,batch,329,91461,76775,0.023767
+2026-11-18T09:37:21+00:00,test_both_models,claude-sonnet-5-5,batch,329,91461,68559,0.434256
