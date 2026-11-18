@@ -14,7 +14,7 @@ from dispatch_router.config import path
 from dispatch_router.evaluate import (
     bootstrap, curve, metrics, oracle_order, order_for, random_curve, router_metrics,
 )
-from dispatch_router.scoring import CAL_SCORES, LEARNED, subsets, test_frame
+from dispatch_router.scoring import CAL_SCORES, LEARNED, subsets, test_frame, with_router_scores
 
 N_BOOT = 1000
 TITLES = {"public": "Public test (GSM8K + MMLU)", "gsm8k": "GSM8K test", "mmlu": "MMLU test",
@@ -22,23 +22,11 @@ TITLES = {"public": "Public test (GSM8K + MMLU)", "gsm8k": "GSM8K test", "mmlu":
           "combined": "All test prompts"}
 
 
-def tie_broken(score: np.ndarray, seed: int = 0) -> np.ndarray:
-    """Add a tiny seeded jitter so routers with tied scores (e.g. the prior) are
-    split randomly instead of by file order. Never changes a strict ordering."""
-    rng = np.random.default_rng(seed)
-    gaps = np.diff(np.unique(score))
-    eps = (gaps.min() if len(gaps) else 1.0) * 1e-3
-    return score + eps * rng.random(len(score))
-
-
 def main() -> None:
     df = test_frame()
     cal = pd.read_csv(CAL_SCORES)
     routers = [r for r in LEARNED if r in set(cal.router)]
-    for r in routers:
-        s = cal[cal.router == r].set_index("id").score_cal
-        df[r] = tie_broken(df.id.map(s).values)
-    assert not df[routers].isna().any().any(), "missing router scores for some test prompts"
+    df = with_router_scores(df, cal, routers)
 
     res_dir = path("results_dir")
     rows, curves_by_set = [], {}

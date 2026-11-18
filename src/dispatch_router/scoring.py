@@ -52,3 +52,22 @@ def subsets(df: pd.DataFrame) -> dict[str, pd.DataFrame]:
         "backend_stress": be[be.tier == "stress"],
         "combined": df,
     }
+
+
+def tie_broken(score: np.ndarray, seed: int = 0) -> np.ndarray:
+    """Add a tiny seeded jitter so routers with tied scores (e.g. the prior, which
+    gives every backend prompt the same score) are split randomly instead of by
+    file order. Never changes a strict ordering."""
+    score = np.asarray(score, dtype=float)
+    rng = np.random.default_rng(seed)
+    gaps = np.diff(np.unique(score))
+    eps = (gaps.min() if len(gaps) else 1.0) * 1e-3
+    return score + eps * rng.random(len(score))
+
+
+def with_router_scores(df: pd.DataFrame, cal: pd.DataFrame, routers: list[str]) -> pd.DataFrame:
+    df = df.copy()
+    for r in routers:
+        df[r] = tie_broken(df.id.map(cal[cal.router == r].set_index("id").score_cal).values)
+    assert not df[routers].isna().any().any(), "missing router scores for some test prompts"
+    return df
