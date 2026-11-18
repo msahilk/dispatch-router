@@ -39,8 +39,9 @@ def test_cache_roundtrip(tmp_path):
 def test_ledger_and_budget_guard(tmp_path, monkeypatch):
     led = Ledger(tmp_path / "l.csv")
     assert led.total() == 0
-    led.append("p", "m", "batch", 3, 10, 10, 4.9)
-    assert led.total() == pytest.approx(4.9)
+    cap = llm.load_config()["budget"]["cap_usd"]
+    led.append("p", "m", "batch", 3, 10, 10, cap - 0.1)
+    assert led.total() == pytest.approx(cap - 0.1)
     monkeypatch.setattr(llm, "Ledger", lambda: led)
     est = llm.estimate([CallSpec("sonnet", "x" * 4000, 1000, "gsm8k")] * 200, batch=False)
     with pytest.raises(llm.BudgetExceeded):
