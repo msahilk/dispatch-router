@@ -19,12 +19,13 @@ def main() -> None:
     items, dropped = build_backend_set(load_config()["sampling"]["seed"])
     write_jsonl(items, path("prompts_dir") / "backend_set.jsonl")
     df = pd.DataFrame(items)
-    table = pd.crosstab(df.category, df.difficulty, margins=True, margins_name="total")
+    table = pd.crosstab(df.category, [df.tier, df.difficulty], margins=True, margins_name="total")
     print(f"Backend set: {len(df)} items -> data/prompts/backend_set.jsonl")
     print(f"Dropped during verification: {dropped}\n")
     print(table.to_string(), "\n")
     print(f"easy share: {(df.difficulty == 'easy').mean():.0%}\n")
-    for it in random.Random(0).sample(items, 15):
+    stress = [i for i in items if i["tier"] == "stress"]
+    for it in random.Random(0).sample(stress, 10) + random.Random(0).sample(items, 5):
         q = it["question"].replace("\n", "\n      ")
         print(f"[{it['id']}] ({it['difficulty']}, {it['answer_type']})\n      {q}\n   -> GOLD: {it['gold']}\n")
 

@@ -35,13 +35,13 @@ budget:
 max_tokens:
   gsm8k: 1024
   mmlu: 768
-  backend: 768
+  backend: 1536  # raised from 768: both models were cut off mid-arithmetic
 
 # Rough output-token expectations, used only for pre-flight cost estimates.
 expected_output_tokens:
   gsm8k: 220
   mmlu: 160
-  backend: 160
+  backend: 250
 
 # Safety margin applied to every pre-flight estimate.
 estimate_margin: 1.3

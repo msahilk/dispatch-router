@@ -205,10 +205,10 @@ SQL_HARD = [
 ]
 
 
-def run_sql(query: str) -> tuple[str, str]:
+def run_sql(query: str, schema: str = SQL_SCHEMA) -> tuple[str, str]:
     """Return (gold, answer_type) for a query that yields exactly one value."""
     con = sqlite3.connect(":memory:")
-    con.executescript(SQL_SCHEMA)
+    con.executescript(schema)
     rows = con.execute(query).fetchall()
     con.close()
     if len(rows) != 1 or len(rows[0]) != 1:
@@ -221,10 +221,10 @@ def run_sql(query: str) -> tuple[str, str]:
     return str(v), "exact"
 
 
-def sql_prompt(query: str) -> str:
+def sql_prompt(query: str, schema: str = SQL_SCHEMA) -> str:
     return (
         "Given this SQLite database:\n\n"
-        f"```sql\n{SQL_SCHEMA}\n```\n\n"
+        f"```sql\n{schema}\n```\n\n"
         "What single value does this query return?\n\n"
         f"```sql\n{query}\n```\n\n"
         "Reason briefly. Then write the final answer on its own last line in exactly this format:\n"
@@ -462,7 +462,7 @@ def _instantiate(templates: list[Template], per_easy: int, per_hard: int, rng: r
 # ============================================================================ build
 
 
-def build_backend_set(seed: int = 42) -> tuple[list[dict[str, Any]], dict[str, int]]:
+def build_backend_set(seed: int = 42, include_stress: bool = True) -> tuple[list[dict[str, Any]], dict[str, int]]:
     rng = random.Random(seed)
     items: list[dict[str, Any]] = []
     dropped = {"python": 0, "sql": 0, "infra": 0, "finance": 0}
@@ -495,7 +495,54 @@ def build_backend_set(seed: int = 42) -> tuple[list[dict[str, Any]], dict[str, i
                           "prompt": f"{it['question']}\n\n{ANSWER_FOOTER_NUMBER}", "gold": it["gold"],
                           "answer_type": "number", "template": it["template"]})
 
+    for it in items:
+        it["tier"] = "standard"
+
+    if include_stress:
+        _add_stress(items, dropped, rng)
+
     for i, it in enumerate(items):
         it.update({"id": f"backend-{it['category']}-{i:03d}", "dataset": "backend", "split": "test"})
         it.setdefault("template", "")
     return items, dropped
+
+
+def _add_stress(items: list[dict[str, Any]], dropped: dict[str, int], rng: random.Random) -> None:
+    """Harder 'stress' tier (see backend_hard.py). Appended after the standard
+    items so the standard items keep their IDs."""
+    from . import backend_hard as bh
+
+    for gen in bh.PY_STRESS:
+        made, tries = 0, 0
+        while made < 4 and tries < 20:
+            tries += 1
+            code = gen(rng)
+            if any(it["question"] == code for it in items):
+                continue
+            try:
+                gold = run_python(code)
+            except Exception:
+                dropped["python"] += 1
+                continue
+            items.append({"category": "python", "difficulty": "hard", "tier": "stress", "question": code,
+                          "prompt": python_prompt(code), "gold": gold, "answer_type": "exact",
+                          "template": gen.__name__})
+            made += 1
+
+    schema = bh.sales_schema()
+    for q in bh.SQL_STRESS:
+        try:
+            gold, at = run_sql(q, schema)
+        except Exception:
+            dropped["sql"] += 1
+            continue
+        items.append({"category": "sql", "difficulty": "hard", "tier": "stress", "question": q,
+                      "prompt": sql_prompt(q, schema), "gold": gold, "answer_type": at, "template": "sales"})
+
+    for cat, gens in (("infra", bh.INFRA_STRESS), ("finance", bh.FINANCE_STRESS)):
+        made, nd = bh.generate_math(gens, 5, rng)
+        dropped[cat] += nd
+        for name, q, gold in made:
+            items.append({"category": cat, "difficulty": "hard", "tier": "stress", "question": q,
+                          "prompt": f"{q}\n\n{ANSWER_FOOTER_NUMBER}", "gold": fmt(gold), "answer_type": "number",
+                          "template": name})
